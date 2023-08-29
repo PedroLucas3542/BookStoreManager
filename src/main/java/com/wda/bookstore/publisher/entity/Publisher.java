@@ -1,6 +1,7 @@
 package com.wda.bookstore.publisher.entity;
 
 import com.wda.bookstore.books.entity.Book;
+import com.wda.bookstore.entity.Auditable;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Publisher {
+public class Publisher extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,14 +1,14 @@
 package com.wda.bookstore.books.entity;
 
+import com.wda.bookstore.entity.Auditable;
 import com.wda.bookstore.publisher.entity.Publisher;
-import com.wda.bookstore.users.entity.User;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-public class Book {
+public class Book extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,12 +25,6 @@ public class Book {
     @Column(columnDefinition = "integer default 0")
     private int amount;
 
-
     @ManyToOne(cascade = {CascadeType.MERGE})
     private Publisher publisher;
-
-    @ManyToOne(cascade = {CascadeType.MERGE})
-    @JoinColumn(name = "app_user")
-    private User user;
-
 }
