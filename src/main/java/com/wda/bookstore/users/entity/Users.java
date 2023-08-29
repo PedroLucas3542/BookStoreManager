@@ -1,15 +1,13 @@
 package com.wda.bookstore.users.entity;
 
-import com.wda.bookstore.books.entity.Book;
+import com.wda.bookstore.entity.Auditable;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Entity
-@Table(name = "app_user")
-public class User {
+public class Users extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +24,5 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Book> books;
 }
 
