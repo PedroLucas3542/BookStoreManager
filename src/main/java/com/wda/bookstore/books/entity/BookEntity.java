@@ -1,14 +1,15 @@
 package com.wda.bookstore.books.entity;
 
-import com.wda.bookstore.entity.Auditable;
-import com.wda.bookstore.publisher.entity.Publisher;
-import lombok.Data;
+import com.wda.bookstore.publisher.entity.PublisherEntity;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
-public class Book extends Auditable {
+public class BookEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,5 +27,5 @@ public class Book extends Auditable {
     private int amount;
 
     @ManyToOne(cascade = {CascadeType.MERGE})
-    private Publisher publisher;
+    private PublisherEntity publisher;
 }

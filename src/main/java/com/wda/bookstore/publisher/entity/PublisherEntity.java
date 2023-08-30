@@ -1,7 +1,6 @@
 package com.wda.bookstore.publisher.entity;
 
-import com.wda.bookstore.books.entity.Book;
-import com.wda.bookstore.entity.Auditable;
+import com.wda.bookstore.books.entity.BookEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Publisher extends Auditable {
+public class PublisherEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,5 +20,5 @@ public class Publisher extends Auditable {
     private String cidade;
 
     @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
-    private List<Book> books;
+    private List<BookEntity> books;
 }

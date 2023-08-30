@@ -1,7 +1,9 @@
 package com.wda.bookstore.publisher.repository;
 
-import com.wda.bookstore.publisher.entity.Publisher;
+import com.wda.bookstore.publisher.entity.PublisherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface PublisherRepository extends JpaRepository<Publisher, Long> {
+@Repository
+public interface PublisherRepository extends JpaRepository<PublisherEntity, Long> {
 }
