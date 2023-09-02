@@ -4,6 +4,7 @@ package com.wda.bookstore.publisher.service;
 import com.wda.bookstore.publisher.dto.PublisherDTO;
 import com.wda.bookstore.publisher.entity.PublisherEntity;
 import com.wda.bookstore.publisher.exception.PublisherAlreadyExistsException;
+import com.wda.bookstore.publisher.exception.PublisherNotFoundException;
 import com.wda.bookstore.publisher.mapper.PublisherMapper;
 import com.wda.bookstore.publisher.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class PublisherService {
         PublisherEntity publisherToCreate = publisherMapper.toModel(publisherDTO);
         PublisherEntity createdPubliser = publisherRepository.save(publisherToCreate);
         return  publisherMapper.toDTO(createdPubliser);
+    }
+
+    public PublisherDTO findById(Long id){
+        return publisherRepository.findById(id)
+                .map(publisherMapper::toDTO)
+                .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 
     private void verifyIfExists(String name) {
