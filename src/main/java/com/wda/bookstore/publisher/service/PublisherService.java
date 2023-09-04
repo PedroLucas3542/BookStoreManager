@@ -34,27 +34,32 @@ public class PublisherService {
         return  publisherMapper.toDTO(createdPublisher);
     }
 
-    public PublisherDTO update(Long id, PublisherDTO publisherToUpdateDTO){
-        PublisherEntity foundPublisher = verifyIfIdExists(id);
-        publisherToUpdateDTO.setId(foundPublisher.getId());
-
-        PublisherEntity publisherToUpdate = publisherMapper.toModel(publisherToUpdateDTO);
-        PublisherEntity updatedPublisher = publisherRepository.save(publisherToUpdate);
-        return  publisherMapper.toDTO(updatedPublisher);
-    }
-
-    private PublisherEntity verifyIfIdExists(Long id) {
-        if (!publisherRepository.existsById(id)) {
-            throw new PublisherNotFoundException(id);
-        }
-        return null;
-    }
-
     public PublisherDTO findById(Long id){
         return publisherRepository.findById(id)
                 .map(publisherMapper::toDTO)
                 .orElseThrow(() -> new PublisherNotFoundException(id));
     }
+
+    public PublisherDTO update(Long id, PublisherDTO publisherToUpdateDTO) {
+        PublisherEntity foundPublisher = verifyIfIdExists(id);
+
+        foundPublisher.setName(publisherToUpdateDTO.getName());
+        foundPublisher.setCidade(publisherToUpdateDTO.getCidade());
+
+        PublisherEntity updatedPublisher = publisherRepository.save(foundPublisher);
+
+        return publisherMapper.toDTO(updatedPublisher);
+    }
+
+    private PublisherEntity verifyIfIdExists(Long id) {
+        Optional<PublisherEntity> publisherOptional = publisherRepository.findById(id);
+        if (publisherOptional.isEmpty()) {
+            throw new PublisherNotFoundException(id);
+        }
+        return publisherOptional.get();
+    }
+
+
 
     public List<PublisherDTO> findAll() {
         return publisherRepository.findAll()

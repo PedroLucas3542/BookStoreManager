@@ -39,7 +39,7 @@ public interface PublisherControllerDocs {
     })
     void delete(Long id);
 
-    @ApiOperation(value = "Delete Publisher By ID Operation")
+    @ApiOperation(value = "Update Publisher By ID Operation")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success publisher updated"),
             @ApiResponse(code = 400, message = "Missing required fields or this publisher already exists"),
