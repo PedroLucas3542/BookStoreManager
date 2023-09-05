@@ -28,7 +28,7 @@ public class PublisherController implements PublisherControllerDocs{
 
     @PutMapping("/{id}")
     public PublisherDTO update(@PathVariable Long id,@RequestBody @Valid PublisherDTO publisherToUpdateDTO) {
-        return publisherService.update(id, publisherToUpdateDTO);
+        return publisherService.update(publisherToUpdateDTO);
     }
 
     @GetMapping("/{id}")

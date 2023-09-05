@@ -40,8 +40,8 @@ public class PublisherService {
                 .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 
-    public PublisherDTO update(Long id, PublisherDTO publisherToUpdateDTO) {
-        PublisherEntity foundPublisher = verifyIfIdExists(id);
+    public PublisherDTO update(PublisherDTO publisherToUpdateDTO) {
+        PublisherEntity foundPublisher = verifyIfIdExists(publisherToUpdateDTO.getId());
 
         foundPublisher.setName(publisherToUpdateDTO.getName());
         foundPublisher.setCidade(publisherToUpdateDTO.getCidade());
@@ -58,7 +58,6 @@ public class PublisherService {
         }
         return publisherOptional.get();
     }
-
 
 
     public List<PublisherDTO> findAll() {

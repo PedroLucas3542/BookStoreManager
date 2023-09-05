@@ -2,6 +2,8 @@ package com.wda.bookstore.users.repository;
 
 import com.wda.bookstore.users.entity.UsersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<UsersEntity, Long> {
+@Repository
+public interface UsersRepository extends JpaRepository<UsersEntity, Long> {
 }
