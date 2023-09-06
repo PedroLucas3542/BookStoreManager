@@ -1,6 +1,6 @@
-package com.wda.bookstore.publisher.controller;
+package com.wda.bookstore.publishers.controller;
 
-import com.wda.bookstore.publisher.dto.PublisherDTO;
+import com.wda.bookstore.publishers.dto.PublisherDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

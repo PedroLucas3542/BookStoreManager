@@ -1,7 +1,7 @@
-package com.wda.bookstore.publisher.controller;
+package com.wda.bookstore.publishers.controller;
 
-import com.wda.bookstore.publisher.dto.PublisherDTO;
-import com.wda.bookstore.publisher.service.PublisherService;
+import com.wda.bookstore.publishers.dto.PublisherDTO;
+import com.wda.bookstore.publishers.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
-package com.wda.bookstore.publisher.mapper;
+package com.wda.bookstore.publishers.mapper;
 
-import com.wda.bookstore.publisher.dto.PublisherDTO;
-import com.wda.bookstore.publisher.entity.PublisherEntity;
+import com.wda.bookstore.publishers.dto.PublisherDTO;
+import com.wda.bookstore.publishers.entity.PublisherEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

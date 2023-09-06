@@ -1,4 +1,4 @@
-package com.wda.bookstore.publisher.entity;
+package com.wda.bookstore.publishers.entity;
 
 import com.wda.bookstore.books.entity.BookEntity;
 import lombok.Data;

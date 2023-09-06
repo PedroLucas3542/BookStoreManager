@@ -1,4 +1,4 @@
-package com.wda.bookstore.publisher.exception;
+package com.wda.bookstore.publishers.exception;
 
 import javax.persistence.EntityExistsException;
 

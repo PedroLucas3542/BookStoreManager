@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -15,18 +16,22 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 public class UserDTO {
 
+    @NotNull
     private Long id;
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private String name;
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private String address;
 
+    @NotEmpty
     @ApiModelProperty(required = true)
     private String city;
 
-    @ApiModelProperty(example = "user@email.com", required = true)
+    @ApiModelProperty(example = "user@user.com", required = true)
     @NotEmpty
     @Email
     private String email;

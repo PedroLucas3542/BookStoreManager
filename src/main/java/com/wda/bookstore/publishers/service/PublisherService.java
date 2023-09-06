@@ -1,12 +1,11 @@
-package com.wda.bookstore.publisher.service;
+package com.wda.bookstore.publishers.service;
 
 
-import com.wda.bookstore.publisher.dto.PublisherDTO;
-import com.wda.bookstore.publisher.entity.PublisherEntity;
-import com.wda.bookstore.publisher.exception.PublisherAlreadyExistsException;
-import com.wda.bookstore.publisher.exception.PublisherNotFoundException;
-import com.wda.bookstore.publisher.mapper.PublisherMapper;
-import com.wda.bookstore.publisher.repository.PublisherRepository;
+import com.wda.bookstore.publishers.dto.PublisherDTO;
+import com.wda.bookstore.publishers.entity.PublisherEntity;
+import com.wda.bookstore.publishers.exception.PublisherAlreadyExistsException;
+import com.wda.bookstore.publishers.exception.PublisherNotFoundException;
+import com.wda.bookstore.publishers.repository.PublisherRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,12 +45,10 @@ public class PublisherService {
     public PublisherDTO update(PublisherDTO publisherToUpdateDTO) {
         PublisherEntity foundPublisher = verifyIfIdExists(publisherToUpdateDTO.getId());
 
-        // Use o ModelMapper para mapear os campos do DTO para a entidade
         modelMapper.map(publisherToUpdateDTO, foundPublisher);
 
         PublisherEntity updatedPublisher = publisherRepository.save(foundPublisher);
 
-        // Use o ModelMapper para mapear a entidade atualizada de volta para DTO
         return modelMapper.map(updatedPublisher, PublisherDTO.class);
     }
 
@@ -68,7 +65,6 @@ public class PublisherService {
     public List<PublisherDTO> findAll() {
         List<PublisherEntity> publishers = publisherRepository.findAll();
 
-        // Use o ModelMapper para mapear a lista de entidades para uma lista de DTOs
         return publishers.stream()
                 .map(publisher -> modelMapper.map(publisher, PublisherDTO.class))
                 .collect(Collectors.toList());

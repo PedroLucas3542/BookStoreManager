@@ -1,6 +1,6 @@
 package com.wda.bookstore.books.entity;
 
-import com.wda.bookstore.publisher.entity.PublisherEntity;
+import com.wda.bookstore.publishers.entity.PublisherEntity;
 import lombok.Getter;
 import lombok.Setter;
 
