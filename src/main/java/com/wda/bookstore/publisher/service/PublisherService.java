@@ -7,6 +7,7 @@ import com.wda.bookstore.publisher.exception.PublisherAlreadyExistsException;
 import com.wda.bookstore.publisher.exception.PublisherNotFoundException;
 import com.wda.bookstore.publisher.mapper.PublisherMapper;
 import com.wda.bookstore.publisher.repository.PublisherRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,39 +18,43 @@ import java.util.stream.Collectors;
 @Service
 public class PublisherService {
 
-    private final static PublisherMapper publisherMapper = PublisherMapper.INSTANCE;
-
-    private PublisherRepository publisherRepository;
+    private final PublisherRepository publisherRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public PublisherService(PublisherRepository publisherRepository){
+    public PublisherService(PublisherRepository publisherRepository, ModelMapper modelMapper) {
         this.publisherRepository = publisherRepository;
+        this.modelMapper = modelMapper;
     }
 
     public PublisherDTO create(PublisherDTO publisherDTO){
         verifyIfExists(publisherDTO.getName());
 
-        PublisherEntity publisherToCreate = publisherMapper.toModel(publisherDTO);
+        PublisherEntity publisherToCreate = modelMapper.map(publisherDTO, PublisherEntity.class);
+
         PublisherEntity createdPublisher = publisherRepository.save(publisherToCreate);
-        return  publisherMapper.toDTO(createdPublisher);
+
+        return modelMapper.map(createdPublisher, PublisherDTO.class);
     }
 
     public PublisherDTO findById(Long id){
         return publisherRepository.findById(id)
-                .map(publisherMapper::toDTO)
+                .map(publisher -> modelMapper.map(publisher, PublisherDTO.class))
                 .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 
     public PublisherDTO update(PublisherDTO publisherToUpdateDTO) {
         PublisherEntity foundPublisher = verifyIfIdExists(publisherToUpdateDTO.getId());
 
-        foundPublisher.setName(publisherToUpdateDTO.getName());
-        foundPublisher.setCidade(publisherToUpdateDTO.getCidade());
+        // Use o ModelMapper para mapear os campos do DTO para a entidade
+        modelMapper.map(publisherToUpdateDTO, foundPublisher);
 
         PublisherEntity updatedPublisher = publisherRepository.save(foundPublisher);
 
-        return publisherMapper.toDTO(updatedPublisher);
+        // Use o ModelMapper para mapear a entidade atualizada de volta para DTO
+        return modelMapper.map(updatedPublisher, PublisherDTO.class);
     }
+
 
     private PublisherEntity verifyIfIdExists(Long id) {
         Optional<PublisherEntity> publisherOptional = publisherRepository.findById(id);
@@ -61,11 +66,14 @@ public class PublisherService {
 
 
     public List<PublisherDTO> findAll() {
-        return publisherRepository.findAll()
-                .stream()
-                .map(publisherMapper::toDTO)
+        List<PublisherEntity> publishers = publisherRepository.findAll();
+
+        // Use o ModelMapper para mapear a lista de entidades para uma lista de DTOs
+        return publishers.stream()
+                .map(publisher -> modelMapper.map(publisher, PublisherDTO.class))
                 .collect(Collectors.toList());
     }
+
 
     public void delete(Long id){
         publisherRepository.findById(id)

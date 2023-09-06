@@ -43,7 +43,7 @@ public class PublisherController implements PublisherControllerDocs{
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(Long id) {
+    public void delete(@PathVariable Long id) {
         publisherService.delete(id);
     }
 }
