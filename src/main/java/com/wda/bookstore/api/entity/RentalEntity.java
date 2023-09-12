@@ -1,12 +1,10 @@
-package com.wda.bookstore.api.entity.rental;
+package com.wda.bookstore.api.entity;
 
-import com.wda.bookstore.api.entity.book.BookEntity;
-import com.wda.bookstore.api.entity.user.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -22,10 +20,9 @@ public class RentalEntity {
     @ManyToOne(cascade = {CascadeType.MERGE})
     private BookEntity book;
 
-    private String rentDate;
+    private LocalDate rentDate;
 
-    private String returnDate;
+    private LocalDate returnDate;
 
-    private String dueDate;
-
+    private LocalDate dueDate;
 }

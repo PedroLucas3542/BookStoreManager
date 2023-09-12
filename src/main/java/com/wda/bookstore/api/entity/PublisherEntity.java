@@ -1,6 +1,5 @@
-package com.wda.bookstore.api.entity.publisher;
+package com.wda.bookstore.api.entity;
 
-import com.wda.bookstore.api.entity.book.BookEntity;
 import lombok.Data;
 
 import javax.persistence.*;

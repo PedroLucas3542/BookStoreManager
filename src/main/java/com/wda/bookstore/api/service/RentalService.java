@@ -2,16 +2,16 @@ package com.wda.bookstore.api.service;
 
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.dto.rental.RentalDTO;
-import com.wda.bookstore.api.entity.publisher.PublisherEntity;
-import com.wda.bookstore.api.entity.rental.RentalEntity;
+import com.wda.bookstore.api.entity.PublisherEntity;
+import com.wda.bookstore.api.entity.RentalEntity;
 import com.wda.bookstore.api.repository.RentalRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RentalService {
@@ -35,8 +35,12 @@ public class RentalService {
         return modelMapper.map(createdRental, RentalDTO.class);
     }
 
-    public List<RentalEntity> getAllRentals() {
-        return rentalRepository.findAll();
+    public List<RentalDTO> getAllRentals() {
+        List<RentalEntity> rentals = rentalRepository.findAll();
+
+        return rentals.stream()
+                .map(rental -> modelMapper.map(rental, RentalDTO.class))
+                .collect(Collectors.toList());
     }
 
     public RentalEntity updateRental(Long id, RentalEntity updatedRental) {

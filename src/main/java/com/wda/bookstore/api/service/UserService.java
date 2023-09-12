@@ -2,7 +2,7 @@ package com.wda.bookstore.api.service;
 
 
 import com.wda.bookstore.api.dto.user.UserDTO;
-import com.wda.bookstore.api.entity.user.UserEntity;
+import com.wda.bookstore.api.entity.UserEntity;
 import com.wda.bookstore.api.exception.user.UserAlreadyExistsException;
 import com.wda.bookstore.api.exception.user.UserNotFoundException;
 import com.wda.bookstore.api.repository.UserRepository;

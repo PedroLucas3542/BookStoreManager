@@ -4,12 +4,11 @@ import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.PastOrPresent;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -20,10 +19,15 @@ public class RentalDTO {
 
     private BookDTO book;
 
-    private String rentDate;
+    @PastOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate rentDate;
 
-    private String returnDate;
+    @FutureOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate returnDate;
 
-    private String dueDate;
-
+    @PastOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dueDate;
 }

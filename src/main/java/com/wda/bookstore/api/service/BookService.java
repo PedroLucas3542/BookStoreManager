@@ -1,13 +1,11 @@
 package com.wda.bookstore.api.service;
 
 import com.wda.bookstore.api.dto.book.BookDTO;
-import com.wda.bookstore.api.dto.publisher.PublisherDTO;
-import com.wda.bookstore.api.entity.book.BookEntity;
+import com.wda.bookstore.api.entity.BookEntity;
 import com.wda.bookstore.api.exception.book.BookAlreadyExistsException;
 import com.wda.bookstore.api.exception.book.BookNotFoundException;
-import com.wda.bookstore.api.exception.publisher.PublisherNotFoundException;
 import com.wda.bookstore.api.repository.BookRepository;
-import com.wda.bookstore.api.entity.publisher.PublisherEntity;
+import com.wda.bookstore.api.entity.PublisherEntity;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

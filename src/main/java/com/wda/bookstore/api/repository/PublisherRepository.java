@@ -1,6 +1,6 @@
 package com.wda.bookstore.api.repository;
 
-import com.wda.bookstore.api.entity.publisher.PublisherEntity;
+import com.wda.bookstore.api.entity.PublisherEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,11 +1,14 @@
 package com.wda.bookstore.exception;
 
+import com.wda.bookstore.api.exception.publisher.PublisherHasBooksException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -26,6 +29,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getMessage(),
                 Collections.singletonList(exception.getMessage())
         );
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(PublisherHasBooksException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handlePublisherHasBooksException(PublisherHasBooksException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "A editora possui livros associados e não pode ser excluída.");
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)

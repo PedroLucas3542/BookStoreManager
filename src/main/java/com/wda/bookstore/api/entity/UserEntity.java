@@ -1,4 +1,4 @@
-package com.wda.bookstore.api.entity.user;
+package com.wda.bookstore.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
