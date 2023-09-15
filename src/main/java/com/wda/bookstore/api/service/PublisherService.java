@@ -32,11 +32,8 @@ public class PublisherService {
 
     public PublisherDTO create(PublisherDTO publisherDTO){
         verifyIfExists(publisherDTO.getName());
-
         PublisherEntity publisherToCreate = modelMapper.map(publisherDTO, PublisherEntity.class);
-
         PublisherEntity createdPublisher = publisherRepository.save(publisherToCreate);
-
         return modelMapper.map(createdPublisher, PublisherDTO.class);
     }
 
@@ -49,9 +46,7 @@ public class PublisherService {
     public PublisherDTO update(PublisherDTO publisherToUpdateDTO) {
         PublisherEntity foundPublisher = verifyIfIdExists(publisherToUpdateDTO.getId());
 
-        // Verifique se o nome foi alterado na atualização
         if (!foundPublisher.getName().equals(publisherToUpdateDTO.getName())) {
-            // O nome foi alterado, aplique a validação de nome duplicado
             verifyIfExists(publisherToUpdateDTO.getName());
         }
 

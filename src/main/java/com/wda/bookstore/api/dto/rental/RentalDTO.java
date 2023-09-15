@@ -30,4 +30,6 @@ public class RentalDTO {
     @PastOrPresent
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
+
+    private String status;
 }

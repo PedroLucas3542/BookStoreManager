@@ -35,7 +35,6 @@ public class BookService {
         PublisherEntity publisher = modelMapper.map(bookDTO.getPublisher(), PublisherEntity.class);
         verifyIfExists(bookDTO.getName(), publisher);
 
-
         BookEntity bookToSave = modelMapper.map(bookDTO, BookEntity.class);
         BookEntity createdBook = bookRepository.save(bookToSave);
         return modelMapper.map(createdBook, BookDTO.class);
@@ -43,11 +42,8 @@ public class BookService {
 
     public BookDTO update(BookDTO bookToUpdateDTO) {
         BookEntity foundBook = verifyIfIdExists(bookToUpdateDTO.getId());
-
         modelMapper.map(bookToUpdateDTO, foundBook);
-
         BookEntity updatedBook = bookRepository.save(foundBook);
-
         return modelMapper.map(updatedBook, BookDTO.class);
     }
 

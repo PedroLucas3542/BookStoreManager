@@ -25,4 +25,6 @@ public class RentalEntity {
     private LocalDate returnDate;
 
     private LocalDate dueDate;
+
+    private String status;
 }
