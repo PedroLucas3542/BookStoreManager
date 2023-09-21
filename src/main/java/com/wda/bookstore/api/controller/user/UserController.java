@@ -1,6 +1,7 @@
 package com.wda.bookstore.api.controller.user;
 
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.exception.user.UserRentExists;
 import com.wda.bookstore.api.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
@@ -43,8 +44,8 @@ public class UserController implements UserControllerDocs{
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-
-    public void delete(@PathVariable Long id) {
+    @Override
+    public void delete(@PathVariable Long id) throws UserRentExists {
         userService.delete(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.wda.bookstore.api.dto.book;
 
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
+import com.wda.bookstore.api.dto.rental.RentalDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,9 @@ public class BookDTO {
     @Min(value = 0, message = "A quantidade deve ser igual ou maior que 0")
     private int amount;
 
-    private PublisherDTO publisher;
+    @Column(columnDefinition = "integer default 0")
+    private int totalRented;
 
+    private PublisherDTO publisher;
 
 }

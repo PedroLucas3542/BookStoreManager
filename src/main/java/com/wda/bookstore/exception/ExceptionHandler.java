@@ -1,6 +1,8 @@
 package com.wda.bookstore.exception;
 
+import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.publisher.PublisherHasBooksException;
+import com.wda.bookstore.api.exception.user.UserRentExists;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,20 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ErrorResponse handlePublisherHasBooksException(PublisherHasBooksException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "A editora possui livros associados e não pode ser excluída.");
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(UserRentExists.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleUserRentExists(UserRentExists ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(BookRentExists.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleUserRentExists(BookRentExists ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)

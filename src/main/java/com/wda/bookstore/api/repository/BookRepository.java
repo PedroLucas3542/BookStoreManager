@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
     boolean existsByNameAndPublisher(String name, PublisherEntity foundPublisher);
-
     boolean existsBooksByPublisher(@Param("publisher") PublisherEntity publisher);
 }

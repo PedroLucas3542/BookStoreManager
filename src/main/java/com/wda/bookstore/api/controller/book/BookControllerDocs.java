@@ -3,6 +3,7 @@ package com.wda.bookstore.api.controller.book;
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.exception.book.BookRentExists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -41,7 +42,7 @@ public interface BookControllerDocs {
             @ApiResponse(code = 204, message = "Success book deleted"),
             @ApiResponse(code = 404, message = "Book not found error"),
     })
-    void delete(Long id);
+    void delete(Long id) throws BookRentExists;
 
     @ApiOperation(value = "Update Book By ID Operation")
     @ApiResponses(value = {

@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +15,11 @@ public class RentalEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(cascade = {CascadeType.MERGE})
     private UserEntity user;
 
+    @JsonBackReference
     @ManyToOne(cascade = {CascadeType.MERGE})
     private BookEntity book;
 

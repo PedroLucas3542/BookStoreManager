@@ -25,6 +25,7 @@ public class RentalController implements RentalControllerDocs{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Override
     public RentalDTO create(@RequestBody @Valid RentalDTO rentalDTO) {
         return rentalService.create(rentalDTO);
     }

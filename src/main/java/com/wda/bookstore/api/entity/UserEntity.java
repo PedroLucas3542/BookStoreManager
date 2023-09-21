@@ -1,9 +1,12 @@
 package com.wda.bookstore.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
+import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,4 +28,7 @@ public class UserEntity {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private List<RentalEntity> rents;
 }

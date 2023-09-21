@@ -2,6 +2,7 @@ package com.wda.bookstore.api.controller.book;
 
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.service.BookService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class BookController implements BookControllerDocs{
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws BookRentExists {
         bookService.delete(id);
     }
 

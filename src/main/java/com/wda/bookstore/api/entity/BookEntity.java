@@ -1,10 +1,12 @@
 package com.wda.bookstore.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wda.bookstore.api.entity.PublisherEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +28,13 @@ public class BookEntity {
     @Column(columnDefinition = "integer default 0")
     private int amount;
 
+    @Column(columnDefinition = "integer default 0")
+    private int totalRented;
+
     @ManyToOne(cascade = {CascadeType.MERGE})
     private PublisherEntity publisher;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private List<RentalEntity> rents;
 }

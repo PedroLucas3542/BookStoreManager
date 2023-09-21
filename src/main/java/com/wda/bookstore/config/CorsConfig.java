@@ -16,6 +16,16 @@ public class CorsConfig {
         config.addAllowedOrigin("*"); // Permitir qualquer origem (não seguro para produção)
         config.addAllowedMethod("*"); // Permitir todos os métodos HTTP
         config.addAllowedHeader("*"); // Permitir todos os cabeçalhos
+
+        // Permita solicitações da origem do seu aplicativo (http://localhost:8081)
+        config.addAllowedOrigin("http://localhost:8081");
+
+        // Permita os métodos HTTP que você deseja suportar
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

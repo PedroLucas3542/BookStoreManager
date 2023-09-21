@@ -2,9 +2,12 @@ package com.wda.bookstore.api.service;
 
 
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.entity.RentalEntity;
 import com.wda.bookstore.api.entity.UserEntity;
 import com.wda.bookstore.api.exception.user.UserAlreadyExistsException;
 import com.wda.bookstore.api.exception.user.UserNotFoundException;
+import com.wda.bookstore.api.exception.user.UserRentExists;
+import com.wda.bookstore.api.repository.RentalRepository;
 import com.wda.bookstore.api.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,13 @@ public class UserService {
 
     private UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final RentalRepository rentalRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper){
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, RentalRepository rentalRepository){
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.rentalRepository = rentalRepository;
     }
 
     public UserDTO create(UserDTO userDTO){
@@ -76,10 +81,15 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    public void delete(Long id){
-        userRepository.findById(id)
+    public void delete(Long id) throws UserRentExists {
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+        List<RentalEntity> activeRentals = rentalRepository.findByUserAndStatus(user, "Pendente");
+        if (!activeRentals.isEmpty()) {
+            throw new UserRentExists("Não é possível excluir o usuário, pois ele possui aluguéis ativos.");
+        }
         userRepository.deleteById(id);
     }
+
 
 }

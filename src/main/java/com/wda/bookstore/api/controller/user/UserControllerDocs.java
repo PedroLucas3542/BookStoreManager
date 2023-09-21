@@ -1,6 +1,7 @@
 package com.wda.bookstore.api.controller.user;
 
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.exception.user.UserRentExists;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -42,5 +43,5 @@ public interface UserControllerDocs {
             @ApiResponse(code = 204, message = "Success user deleted"),
             @ApiResponse(code = 404, message = "User not found error"),
     })
-    void delete(Long id);
+    void delete(Long id) throws UserRentExists;
 }

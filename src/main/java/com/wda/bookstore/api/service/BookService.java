@@ -2,15 +2,20 @@ package com.wda.bookstore.api.service;
 
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.entity.BookEntity;
+import com.wda.bookstore.api.entity.RentalEntity;
 import com.wda.bookstore.api.exception.book.BookAlreadyExistsException;
 import com.wda.bookstore.api.exception.book.BookNotFoundException;
+import com.wda.bookstore.api.exception.book.BookRentExists;
+import com.wda.bookstore.api.exception.user.UserRentExists;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.entity.PublisherEntity;
+import com.wda.bookstore.api.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +24,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookService {
 
+    private final RentalRepository rentalRepository;
+
     private PublisherService publisherService;
 
     private BookRepository bookRepository;
@@ -26,7 +33,8 @@ public class BookService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public BookService(BookRepository bookRepository, ModelMapper modelMapper) {
+    public BookService(RentalRepository rentalRepository, BookRepository bookRepository, ModelMapper modelMapper) {
+        this.rentalRepository = rentalRepository;
         this.bookRepository = bookRepository;
         this.modelMapper = modelMapper;
     }
@@ -60,6 +68,7 @@ public class BookService {
 
         return books.stream()
                 .map(book -> modelMapper.map(book, BookDTO.class))
+                .sorted(Comparator.comparingInt(BookDTO::getTotalRented).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -69,9 +78,13 @@ public class BookService {
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
-    public void delete(Long id){
-        bookRepository.findById(id)
+    public void delete(Long id) throws BookRentExists {
+        BookEntity book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
+        List<RentalEntity> activeRentals = rentalRepository.findByBookAndStatus(book, "Pendente");
+        if (!activeRentals.isEmpty()) {
+            throw new BookRentExists("Não é possível excluir o livro, pois ele possui aluguéis ativos.");
+        }
         bookRepository.deleteById(id);
     }
 
