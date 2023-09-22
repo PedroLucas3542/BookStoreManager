@@ -22,8 +22,8 @@ public class BookEntity {
     @Column(nullable = false)
     private String author;
 
-    @Column(columnDefinition = "integer default 0", length = 4)
-    private int birthYear;
+    @Column(columnDefinition = "integer default 0")
+    private Integer birthYear;
 
     @Column(columnDefinition = "integer default 0")
     private int amount;

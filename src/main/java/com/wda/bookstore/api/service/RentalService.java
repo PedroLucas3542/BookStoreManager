@@ -1,20 +1,17 @@
 package com.wda.bookstore.api.service;
 
-import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.rental.RentalDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.entity.BookEntity;
 import com.wda.bookstore.api.entity.RentalEntity;
-import com.wda.bookstore.api.entity.UserEntity;
+import com.wda.bookstore.api.exception.book.UnavaiableBookException;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.repository.RentalRepository;
-import com.wda.bookstore.api.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.awt.print.Book;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -46,24 +43,33 @@ public class RentalService {
         return rentalRepository.findById(id);
     }
 
-    public RentalDTO create(RentalDTO rentalDTO) {
-        rentalDTO.setStatus("Pendente");
+    public RentalDTO create(RentalDTO rentalDTO) throws UnavaiableBookException {
         Long bookId = rentalDTO.getBook().getId();
-        UserDTO user = rentalDTO.getUser();
 
-        if (bookId != null && user != null) {
-            BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
-            if (bookEntity != null) {
-                rentalDTO.getBook().setTotalRented(bookEntity.getTotalRented() + 1);
-                rentalDTO.getBook().setAmount(bookEntity.getAmount() - 1);
-                bookRepository.save(bookEntity);
+            rentalDTO.setStatus("Pendente");
+            UserDTO user = rentalDTO.getUser();
 
-                RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
-                RentalEntity createdRental = rentalRepository.save(rentalToCreate);
-                return modelMapper.map(createdRental, RentalDTO.class);
+            if (bookId != null && user != null) {
+                BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
+                if (bookEntity != null) {
+                        if (!isBookAvailable(rentalDTO.getBook().getId())) {
+                            throw new UnavaiableBookException("Este livro não está disponível para aluguel.");
+                        }
+                    rentalDTO.getBook().setTotalRented(bookEntity.getTotalRented() + 1);
+                    rentalDTO.getBook().setAmount(bookEntity.getAmount() - 1);
+                    bookRepository.save(bookEntity);
+
+                    RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
+                    RentalEntity createdRental = rentalRepository.save(rentalToCreate);
+                    return modelMapper.map(createdRental, RentalDTO.class);
+                }
             }
-        }
         return rentalDTO;
+    }
+
+    private boolean isBookAvailable(Long bookId) {
+        BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
+        return bookEntity != null && bookEntity.getAmount() > bookEntity.getTotalRented();
     }
 
     public List<RentalDTO> getAllRentals() {
@@ -96,7 +102,6 @@ public class RentalService {
         }
         return rentalDTO;
     }
-
 
     private RentalEntity verifyIfIdExists(Long id) {
         Optional<RentalEntity> rentalOptional = rentalRepository.findById(id);

@@ -6,6 +6,7 @@ import com.wda.bookstore.api.entity.RentalEntity;
 import com.wda.bookstore.api.exception.book.BookAlreadyExistsException;
 import com.wda.bookstore.api.exception.book.BookNotFoundException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
+import com.wda.bookstore.api.exception.book.YearErrorException;
 import com.wda.bookstore.api.exception.user.UserRentExists;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.entity.PublisherEntity;
@@ -15,6 +16,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
+import javax.transaction.Transactional;
+import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +43,12 @@ public class BookService {
         this.modelMapper = modelMapper;
     }
 
-    public BookDTO create(BookDTO bookDTO) {
+    public BookDTO create(BookDTO bookDTO) throws YearErrorException {
+        int currentYear = Year.now().getValue();
+        if (bookDTO.getBirthYear() > currentYear) {
+            throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
+        }
+
         PublisherEntity publisher = modelMapper.map(bookDTO.getPublisher(), PublisherEntity.class);
         verifyIfExists(bookDTO.getName(), publisher);
 
@@ -48,7 +57,15 @@ public class BookService {
         return modelMapper.map(createdBook, BookDTO.class);
     }
 
-    public BookDTO update(BookDTO bookToUpdateDTO) {
+    public BookDTO update(BookDTO bookToUpdateDTO) throws YearErrorException {
+        int currentYear = Year.now().getValue();
+        if (bookToUpdateDTO.getBirthYear() > currentYear) {
+            throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
+        }
+
+        PublisherEntity publisher = modelMapper.map(bookToUpdateDTO.getPublisher(), PublisherEntity.class);
+        verifyIfExists(bookToUpdateDTO.getName(), publisher);
+
         BookEntity foundBook = verifyIfIdExists(bookToUpdateDTO.getId());
         modelMapper.map(bookToUpdateDTO, foundBook);
         BookEntity updatedBook = bookRepository.save(foundBook);

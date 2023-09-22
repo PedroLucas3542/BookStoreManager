@@ -28,9 +28,9 @@ public class BookDTO {
     @NotEmpty
     private String author;
 
-    @Column(columnDefinition = "integer default 0", length = 4)
+    @Column(columnDefinition = "integer default 0")
     @NotNull
-    private int birthYear;
+    private Integer birthYear;
 
     @Column(columnDefinition = "integer default 0")
     @NotNull

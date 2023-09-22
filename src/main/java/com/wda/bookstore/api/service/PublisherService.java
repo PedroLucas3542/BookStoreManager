@@ -45,16 +45,12 @@ public class PublisherService {
 
     public PublisherDTO update(PublisherDTO publisherToUpdateDTO) {
         PublisherEntity foundPublisher = verifyIfIdExists(publisherToUpdateDTO.getId());
-
         if (!foundPublisher.getName().equals(publisherToUpdateDTO.getName())) {
             verifyIfExists(publisherToUpdateDTO.getName());
         }
-
         foundPublisher.setName(publisherToUpdateDTO.getName());
         foundPublisher.setCidade(publisherToUpdateDTO.getCidade());
-
         PublisherEntity updatedPublisher = publisherRepository.save(foundPublisher);
-
         return modelMapper.map(updatedPublisher, PublisherDTO.class);
     }
 

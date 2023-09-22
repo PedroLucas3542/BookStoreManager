@@ -3,6 +3,7 @@ package com.wda.bookstore.api.controller.book;
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.exception.book.BookRentExists;
+import com.wda.bookstore.api.exception.book.YearErrorException;
 import com.wda.bookstore.api.service.BookService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,7 @@ public class BookController implements BookControllerDocs{
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public BookDTO create(@RequestBody @Valid BookDTO bookDTO) {
+    public BookDTO create(@RequestBody @Valid BookDTO bookDTO) throws YearErrorException {
         return bookService.create(bookDTO);
     }
 
@@ -47,7 +47,7 @@ public class BookController implements BookControllerDocs{
     }
 
     @PutMapping
-    public BookDTO update(@RequestBody @Valid BookDTO bookToUpdateDTO) {
+    public BookDTO update(@RequestBody @Valid BookDTO bookToUpdateDTO) throws YearErrorException {
         return bookService.update(bookToUpdateDTO);
     }
 }
