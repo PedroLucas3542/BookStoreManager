@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,11 +13,11 @@ public class PublisherEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String cidade;
+    private String city;
 
     @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<BookEntity> books;

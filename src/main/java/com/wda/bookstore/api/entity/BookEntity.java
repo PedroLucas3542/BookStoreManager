@@ -31,7 +31,8 @@ public class BookEntity {
     @Column(columnDefinition = "integer default 0")
     private int totalRented;
 
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name = "publisher_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private PublisherEntity publisher;
 
     @JsonManagedReference

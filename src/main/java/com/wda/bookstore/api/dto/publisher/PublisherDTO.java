@@ -20,5 +20,5 @@ public class PublisherDTO {
 
     @Column(nullable = false)
     @NotEmpty
-    private String cidade;
+    private String city;
 }

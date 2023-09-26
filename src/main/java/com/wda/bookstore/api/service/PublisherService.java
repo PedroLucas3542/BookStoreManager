@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class PublisherService {
             verifyIfExists(publisherToUpdateDTO.getName());
         }
         foundPublisher.setName(publisherToUpdateDTO.getName());
-        foundPublisher.setCidade(publisherToUpdateDTO.getCidade());
+        foundPublisher.setCity(publisherToUpdateDTO.getCity());
         PublisherEntity updatedPublisher = publisherRepository.save(foundPublisher);
         return modelMapper.map(updatedPublisher, PublisherDTO.class);
     }
@@ -80,16 +81,16 @@ public class PublisherService {
         publisherRepository.deleteById(id);
     }
 
-    public PublisherEntity verifyIfAndGetExists(Long id){
-       return publisherRepository.findById(id)
-                .orElseThrow(() -> new PublisherNotFoundException(id));
-    }
-
     private void verifyIfExists(String name) {
         Optional<PublisherEntity> duplicatedPublisher = publisherRepository
                 .findByName(name);
         if (duplicatedPublisher.isPresent()){
             throw new PublisherAlreadyExistsException(name);
         }
+    }
+
+    public PublisherEntity findPublisherById(Long id) {
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Editora não encontrada com o ID: " + id));
     }
 }

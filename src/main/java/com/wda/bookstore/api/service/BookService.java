@@ -7,17 +7,16 @@ import com.wda.bookstore.api.exception.book.BookAlreadyExistsException;
 import com.wda.bookstore.api.exception.book.BookNotFoundException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.book.YearErrorException;
-import com.wda.bookstore.api.exception.user.UserRentExists;
+import com.wda.bookstore.api.exception.publisher.PublisherNotFoundException;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.entity.PublisherEntity;
+import com.wda.bookstore.api.repository.PublisherRepository;
 import com.wda.bookstore.api.repository.RentalRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
-import javax.transaction.Transactional;
 import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
@@ -28,11 +27,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookService {
 
+    private  PublisherService publisherService;
+
     private final RentalRepository rentalRepository;
 
-    private PublisherService publisherService;
+    private PublisherRepository publisherRepository;
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     private final ModelMapper modelMapper;
 
@@ -46,7 +47,7 @@ public class BookService {
     public BookDTO create(BookDTO bookDTO) throws YearErrorException {
         int currentYear = Year.now().getValue();
         if (bookDTO.getBirthYear() > currentYear) {
-            throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
+            throw new YearErrorException("O ano de criação do livro deve ser do ano atual para trás.");
         }
 
         PublisherEntity publisher = modelMapper.map(bookDTO.getPublisher(), PublisherEntity.class);
@@ -62,17 +63,19 @@ public class BookService {
         if (bookToUpdateDTO.getBirthYear() > currentYear) {
             throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
         }
-
-        PublisherEntity publisher = modelMapper.map(bookToUpdateDTO.getPublisher(), PublisherEntity.class);
-        verifyIfExists(bookToUpdateDTO.getName(), publisher);
-
-        BookEntity foundBook = verifyIfIdExists(bookToUpdateDTO.getId());
+        BookEntity foundBook = verifyIfIdBookExists(bookToUpdateDTO.getId());
+        PublisherEntity publisherEntity = modelMapper.map(bookToUpdateDTO.getPublisher(), PublisherEntity.class);
+        if (publisherEntity != null) {
+            foundBook.setPublisher(publisherEntity);
+        } else {
+            throw new PublisherNotFoundException(bookToUpdateDTO.getPublisher().getId());
+        }
         modelMapper.map(bookToUpdateDTO, foundBook);
         BookEntity updatedBook = bookRepository.save(foundBook);
         return modelMapper.map(updatedBook, BookDTO.class);
     }
 
-    private BookEntity verifyIfIdExists(Long id) {
+    private BookEntity verifyIfIdBookExists(Long id) {
         Optional<BookEntity> bookOptional = bookRepository.findById(id);
         if (bookOptional.isEmpty()) {
             throw new BookNotFoundException(id);

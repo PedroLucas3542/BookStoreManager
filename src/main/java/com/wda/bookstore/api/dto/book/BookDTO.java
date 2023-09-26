@@ -41,5 +41,4 @@ public class BookDTO {
     private int totalRented;
 
     private PublisherDTO publisher;
-
 }

@@ -47,7 +47,7 @@ public class BookController implements BookControllerDocs{
     }
 
     @PutMapping
-    public BookDTO update(@RequestBody @Valid BookDTO bookToUpdateDTO) throws YearErrorException {
+    public BookDTO update(@RequestBody BookDTO bookToUpdateDTO) throws YearErrorException {
         return bookService.update(bookToUpdateDTO);
     }
 }
