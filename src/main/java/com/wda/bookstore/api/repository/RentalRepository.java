@@ -12,4 +12,6 @@ public interface RentalRepository extends JpaRepository<RentalEntity, Long> {
     List<RentalEntity> findByUserAndStatus(UserEntity user, String status);
 
     List<RentalEntity> findByBookAndStatus(BookEntity book, String status);
+
+    List<RentalEntity> findByBookIdAndUserIdAndStatus(Long bookId, Long userId, String status);
 }

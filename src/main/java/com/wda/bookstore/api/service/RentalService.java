@@ -45,27 +45,36 @@ public class RentalService {
 
     public RentalDTO create(RentalDTO rentalDTO) throws UnavaiableBookException {
         Long bookId = rentalDTO.getBook().getId();
+        UserDTO user = rentalDTO.getUser();
 
-            rentalDTO.setStatus("Pendente");
-            UserDTO user = rentalDTO.getUser();
-
-            if (bookId != null && user != null) {
-                BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
-                if (bookEntity != null) {
-                        if (!isBookAvailable(rentalDTO.getBook().getId())) {
-                            throw new UnavaiableBookException("Este livro não está disponível para aluguel.");
-                        }
-                    rentalDTO.getBook().setTotalRented(bookEntity.getTotalRented() + 1);
-                    rentalDTO.getBook().setAmount(bookEntity.getAmount() - 1);
-                    bookRepository.save(bookEntity);
-
-                    RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
-                    RentalEntity createdRental = rentalRepository.save(rentalToCreate);
-                    return modelMapper.map(createdRental, RentalDTO.class);
+        if (bookId != null && user != null) {
+            BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
+            if (bookEntity != null) {
+                if (!isBookAvailable(bookId)) {
+                    throw new UnavaiableBookException("Este livro não está disponível para aluguel.");
                 }
+                if (isBookRentedToUser(bookId, user.getId())) {
+                    throw new UnavaiableBookException("Este usuário já tem um aluguel ativo com este livro");
+                }
+                rentalDTO.setStatus("Pendente");
+                rentalDTO.getBook().setTotalRented(bookEntity.getTotalRented() + 1);
+                rentalDTO.getBook().setAmount(bookEntity.getAmount() - 1);
+                bookRepository.save(bookEntity);
+
+                RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
+                RentalEntity createdRental = rentalRepository.save(rentalToCreate);
+                return modelMapper.map(createdRental, RentalDTO.class);
             }
+        }
+
         return rentalDTO;
     }
+
+    private boolean isBookRentedToUser(Long bookId, Long userId) {
+        List<RentalEntity> activeRentals = rentalRepository.findByBookIdAndUserIdAndStatus(bookId, userId, "Pendente");
+        return !activeRentals.isEmpty();
+    }
+
 
     private boolean isBookAvailable(Long bookId) {
         BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);

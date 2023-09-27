@@ -3,10 +3,7 @@ package com.wda.bookstore.api.service;
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.entity.BookEntity;
 import com.wda.bookstore.api.entity.RentalEntity;
-import com.wda.bookstore.api.exception.book.BookAlreadyExistsException;
-import com.wda.bookstore.api.exception.book.BookNotFoundException;
-import com.wda.bookstore.api.exception.book.BookRentExists;
-import com.wda.bookstore.api.exception.book.YearErrorException;
+import com.wda.bookstore.api.exception.book.*;
 import com.wda.bookstore.api.exception.publisher.PublisherNotFoundException;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.entity.PublisherEntity;
@@ -44,10 +41,14 @@ public class BookService {
         this.modelMapper = modelMapper;
     }
 
-    public BookDTO create(BookDTO bookDTO) throws YearErrorException {
+    public BookDTO create(BookDTO bookDTO) throws YearErrorException, AmountErrorException {
         int currentYear = Year.now().getValue();
         if (bookDTO.getBirthYear() > currentYear) {
             throw new YearErrorException("O ano de criação do livro deve ser do ano atual para trás.");
+        }
+
+        if (bookDTO.getAmount() <= 0){
+            throw new AmountErrorException("A quantidade de livros deve ser maior que zero.");
         }
 
         PublisherEntity publisher = modelMapper.map(bookDTO.getPublisher(), PublisherEntity.class);
@@ -58,10 +59,13 @@ public class BookService {
         return modelMapper.map(createdBook, BookDTO.class);
     }
 
-    public BookDTO update(BookDTO bookToUpdateDTO) throws YearErrorException {
+    public BookDTO update(BookDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
         int currentYear = Year.now().getValue();
         if (bookToUpdateDTO.getBirthYear() > currentYear) {
             throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
+        }
+        if (bookToUpdateDTO.getAmount() <= 0){
+            throw new AmountErrorException("A quantidade de livros deve ser maior que zero.");
         }
         BookEntity foundBook = verifyIfIdBookExists(bookToUpdateDTO.getId());
         PublisherEntity publisherEntity = modelMapper.map(bookToUpdateDTO.getPublisher(), PublisherEntity.class);

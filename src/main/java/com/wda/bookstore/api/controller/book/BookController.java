@@ -2,6 +2,7 @@ package com.wda.bookstore.api.controller.book;
 
 import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.exception.book.AmountErrorException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.book.YearErrorException;
 import com.wda.bookstore.api.service.BookService;
@@ -26,7 +27,7 @@ public class BookController implements BookControllerDocs{
     }
 
     @PostMapping
-    public BookDTO create(@RequestBody @Valid BookDTO bookDTO) throws YearErrorException {
+    public BookDTO create(@RequestBody @Valid BookDTO bookDTO) throws YearErrorException, AmountErrorException {
         return bookService.create(bookDTO);
     }
 
@@ -47,7 +48,7 @@ public class BookController implements BookControllerDocs{
     }
 
     @PutMapping
-    public BookDTO update(@RequestBody BookDTO bookToUpdateDTO) throws YearErrorException {
+    public BookDTO update(@RequestBody BookDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
         return bookService.update(bookToUpdateDTO);
     }
 }

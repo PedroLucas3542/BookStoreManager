@@ -1,5 +1,6 @@
 package com.wda.bookstore.exception;
 
+import com.wda.bookstore.api.exception.book.AmountErrorException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.book.UnavaiableBookException;
 import com.wda.bookstore.api.exception.book.YearErrorException;
@@ -53,6 +54,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleUserRentExists(BookRentExists ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AmountErrorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleAmountErrorException(AmountErrorException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 

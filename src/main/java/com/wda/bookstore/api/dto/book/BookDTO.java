@@ -34,7 +34,6 @@ public class BookDTO {
 
     @Column(columnDefinition = "integer default 0")
     @NotNull
-    @Min(value = 0, message = "A quantidade deve ser igual ou maior que 0")
     private int amount;
 
     @Column(columnDefinition = "integer default 0")
