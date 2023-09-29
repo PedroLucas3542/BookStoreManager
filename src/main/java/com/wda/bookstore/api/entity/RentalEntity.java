@@ -16,18 +16,18 @@ public class RentalEntity {
     private Long id;
 
     @JsonBackReference
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
     private UserEntity user;
 
     @JsonBackReference
-    @ManyToOne(cascade = {CascadeType.MERGE})
+    @ManyToOne
     private BookEntity book;
 
     private LocalDate rentDate;
 
     private LocalDate returnDate;
 
-    private LocalDate dueDate;
+    private LocalDate previsionDate;
 
     private String status;
 }

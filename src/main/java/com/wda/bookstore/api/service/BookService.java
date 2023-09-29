@@ -43,7 +43,7 @@ public class BookService {
 
     public BookDTO create(BookDTO bookDTO) throws YearErrorException, AmountErrorException {
         int currentYear = Year.now().getValue();
-        if (bookDTO.getBirthYear() > currentYear) {
+        if (bookDTO.getPublishingYear() > currentYear) {
             throw new YearErrorException("O ano de criação do livro deve ser do ano atual para trás.");
         }
 
@@ -61,7 +61,7 @@ public class BookService {
 
     public BookDTO update(BookDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
         int currentYear = Year.now().getValue();
-        if (bookToUpdateDTO.getBirthYear() > currentYear) {
+        if (bookToUpdateDTO.getPublishingYear() > currentYear) {
             throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
         }
         if (bookToUpdateDTO.getAmount() <= 0){
@@ -105,9 +105,9 @@ public class BookService {
     public void delete(Long id) throws BookRentExists {
         BookEntity book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
-        List<RentalEntity> activeRentals = rentalRepository.findByBookAndStatus(book, "Pendente");
+        List<RentalEntity> activeRentals = rentalRepository.findByBook(book);
         if (!activeRentals.isEmpty()) {
-            throw new BookRentExists("Não é possível excluir o livro, pois ele possui aluguéis ativos.");
+            throw new BookRentExists("Não é possível excluir o livro, pois ele possui aluguéis atrelados a ele.");
         }
         bookRepository.deleteById(id);
     }

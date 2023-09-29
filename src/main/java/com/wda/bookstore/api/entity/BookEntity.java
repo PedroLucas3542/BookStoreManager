@@ -24,7 +24,7 @@ public class BookEntity {
     private String author;
 
     @Column(columnDefinition = "integer default 0")
-    private Integer birthYear;
+    private Integer publishingYear;
 
     @Column(columnDefinition = "integer default 0")
     private int amount;
@@ -37,6 +37,6 @@ public class BookEntity {
     private PublisherEntity publisher;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "book",fetch = FetchType.LAZY )
     private List<RentalEntity> rents;
 }

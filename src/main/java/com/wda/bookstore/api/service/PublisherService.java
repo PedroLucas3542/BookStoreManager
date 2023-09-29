@@ -1,6 +1,5 @@
 package com.wda.bookstore.api.service;
 
-
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.entity.PublisherEntity;
 import com.wda.bookstore.api.exception.publisher.PublisherAlreadyExistsException;
@@ -33,8 +32,7 @@ public class PublisherService {
 
     public PublisherDTO create(PublisherDTO publisherDTO){
         verifyIfExists(publisherDTO.getName());
-        PublisherEntity publisherToCreate = modelMapper.map(publisherDTO, PublisherEntity.class);
-        PublisherEntity createdPublisher = publisherRepository.save(publisherToCreate);
+        PublisherEntity createdPublisher = publisherRepository.save(modelMapper.map(publisherDTO, PublisherEntity.class));
         return modelMapper.map(createdPublisher, PublisherDTO.class);
     }
 
@@ -55,7 +53,6 @@ public class PublisherService {
         return modelMapper.map(updatedPublisher, PublisherDTO.class);
     }
 
-
     private PublisherEntity verifyIfIdExists(Long id) {
         Optional<PublisherEntity> publisherOptional = publisherRepository.findById(id);
         if (publisherOptional.isEmpty()) {
@@ -66,7 +63,6 @@ public class PublisherService {
 
     public List<PublisherDTO> findAll() {
         List<PublisherEntity> publishers = publisherRepository.findAll();
-
         return publishers.stream()
                 .map(publisher -> modelMapper.map(publisher, PublisherDTO.class))
                 .collect(Collectors.toList());
@@ -82,9 +78,7 @@ public class PublisherService {
     }
 
     private void verifyIfExists(String name) {
-        Optional<PublisherEntity> duplicatedPublisher = publisherRepository
-                .findByName(name);
-        if (duplicatedPublisher.isPresent()){
+        if (publisherRepository.findByName(name).isPresent()){
             throw new PublisherAlreadyExistsException(name);
         }
     }

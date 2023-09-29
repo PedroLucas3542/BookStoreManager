@@ -57,8 +57,8 @@ public class RentalService {
                     throw new UnavaiableBookException("Este usuário já tem um aluguel ativo com este livro");
                 }
                 rentalDTO.setStatus("Pendente");
-                rentalDTO.getBook().setTotalRented(bookEntity.getTotalRented() + 1);
-                rentalDTO.getBook().setAmount(bookEntity.getAmount() - 1);
+                bookEntity.setTotalRented(bookEntity.getTotalRented() + 1);
+                bookEntity.setAmount(bookEntity.getAmount() - 1);
                 bookRepository.save(bookEntity);
 
                 RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
@@ -66,7 +66,6 @@ public class RentalService {
                 return modelMapper.map(createdRental, RentalDTO.class);
             }
         }
-
         return rentalDTO;
     }
 
@@ -93,7 +92,7 @@ public class RentalService {
         Long bookId = rentalDTO.getBook().getId();
         RentalEntity rentToUpdate = verifyIfIdExists(rentalDTO.getId());
         LocalDate returnDate = rentalDTO.getReturnDate();
-        LocalDate dueDate = rentalDTO.getDueDate();
+        LocalDate dueDate = rentalDTO.getPrevisionDate();
         BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
         if (bookEntity != null) {
             if (returnDate == null || returnDate.isBefore(dueDate)) {

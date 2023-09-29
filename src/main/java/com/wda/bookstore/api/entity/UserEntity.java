@@ -29,6 +29,6 @@ public class UserEntity {
     private String email;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY )
     private List<RentalEntity> rents;
 }

@@ -32,7 +32,7 @@ public class RentalDTO {
 
     @FutureOrPresent
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dueDate;
+    private LocalDate previsionDate;
 
     private String status;
 }

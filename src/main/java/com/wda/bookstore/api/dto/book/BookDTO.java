@@ -30,7 +30,7 @@ public class BookDTO {
 
     @Column(columnDefinition = "integer default 0")
     @NotNull
-    private Integer birthYear;
+    private Integer publishingYear;
 
     @Column(columnDefinition = "integer default 0")
     @NotNull

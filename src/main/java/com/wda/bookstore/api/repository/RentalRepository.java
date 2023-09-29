@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface RentalRepository extends JpaRepository<RentalEntity, Long> {
 
-    List<RentalEntity> findByUserAndStatus(UserEntity user, String status);
+    List<RentalEntity> findByUser(UserEntity user);
 
-    List<RentalEntity> findByBookAndStatus(BookEntity book, String status);
+    List<RentalEntity> findByBook(BookEntity book);
 
     List<RentalEntity> findByBookIdAndUserIdAndStatus(Long bookId, Long userId, String status);
 }

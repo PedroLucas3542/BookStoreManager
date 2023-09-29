@@ -33,11 +33,8 @@ public class UserService {
 
     public UserDTO create(UserDTO userDTO){
         verifyIfExists(userDTO.getName(), userDTO.getEmail());
-
         UserEntity userToCreate = modelMapper.map(userDTO, UserEntity.class);
-
         UserEntity createdUser = userRepository.save(userToCreate);
-
         return modelMapper.map(createdUser, UserDTO.class);
     }
 
@@ -84,9 +81,9 @@ public class UserService {
     public void delete(Long id) throws UserRentExists {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        List<RentalEntity> activeRentals = rentalRepository.findByUserAndStatus(user, "Pendente");
+        List<RentalEntity> activeRentals = rentalRepository.findByUser(user);
         if (!activeRentals.isEmpty()) {
-            throw new UserRentExists("Não é possível excluir o usuário, pois ele possui aluguéis ativos.");
+            throw new UserRentExists("Não é possível excluir o usuário, pois ele possui aluguéis atrelados a ele.");
         }
         userRepository.deleteById(id);
     }
