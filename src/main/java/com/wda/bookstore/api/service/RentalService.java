@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.service;
 
+import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.rental.RentalDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.entity.BookEntity;

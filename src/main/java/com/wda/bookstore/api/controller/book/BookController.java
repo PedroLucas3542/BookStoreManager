@@ -31,10 +31,13 @@ public class BookController implements BookControllerDocs{
         return bookService.create(bookDTO);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<BookDTO> findAll() {
         return bookService.findAll();
     }
+
+    @GetMapping("/available-books")
+    public List<BookDTO> getAvailableBooks() { return bookService.getAvailableBooks(); }
 
     @GetMapping("/{id}")
     public BookDTO findById(@PathVariable Long id) {
@@ -46,7 +49,6 @@ public class BookController implements BookControllerDocs{
     public void delete(@PathVariable Long id) throws BookRentExists {
         bookService.delete(id);
     }
-
     @PutMapping
     public BookDTO update(@RequestBody BookDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
         return bookService.update(bookToUpdateDTO);

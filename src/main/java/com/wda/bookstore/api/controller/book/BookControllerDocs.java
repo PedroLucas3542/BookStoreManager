@@ -32,6 +32,13 @@ public interface BookControllerDocs {
     })
     List<BookDTO> findAll();
 
+    @ApiOperation(value = "List All Avaible Book Operation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return all registered books"),
+
+    })
+    List<BookDTO> getAvailableBooks();
+
     @ApiOperation(value = "Find Book By ID Operation")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success book found"),

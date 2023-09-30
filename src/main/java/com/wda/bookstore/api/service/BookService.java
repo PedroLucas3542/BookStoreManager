@@ -96,6 +96,14 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
+    public List<BookDTO> getAvailableBooks() {
+        List<BookEntity> availableBooks = bookRepository.findByAmountGreaterThan(0);
+
+        return availableBooks.stream()
+                .map(bookEntity -> modelMapper.map(bookEntity, BookDTO.class))
+                .collect(Collectors.toList());
+    }
+
     public BookDTO findById(Long id){
         return bookRepository.findById(id)
                 .map(book -> modelMapper.map(book, BookDTO.class))
