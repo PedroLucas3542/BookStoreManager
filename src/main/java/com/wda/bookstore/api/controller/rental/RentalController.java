@@ -1,6 +1,8 @@
 package com.wda.bookstore.api.controller.rental;
 
+import com.wda.bookstore.api.dto.rental.RentalCreateDTO;
 import com.wda.bookstore.api.dto.rental.RentalDTO;
+import com.wda.bookstore.api.dto.rental.RentalUpdateDTO;
 import com.wda.bookstore.api.exception.book.UnavaiableBookException;
 import com.wda.bookstore.api.service.RentalService;
 import io.swagger.annotations.Api;
@@ -26,7 +28,7 @@ public class RentalController implements RentalControllerDocs{
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Override
-    public RentalDTO create(@RequestBody @Valid RentalDTO rentalDTO) throws UnavaiableBookException {
+    public RentalCreateDTO create(@RequestBody @Valid RentalCreateDTO rentalDTO) throws UnavaiableBookException {
         return rentalService.create(rentalDTO);
     }
 
@@ -36,7 +38,7 @@ public class RentalController implements RentalControllerDocs{
     }
 
     @PutMapping
-    public RentalDTO update(@RequestBody RentalDTO rentalDTO) {
+    public RentalUpdateDTO update(@RequestBody RentalUpdateDTO rentalDTO) {
         return rentalService.update(rentalDTO);
     }
 }

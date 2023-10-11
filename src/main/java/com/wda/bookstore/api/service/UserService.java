@@ -2,8 +2,12 @@ package com.wda.bookstore.api.service;
 
 
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.dto.user.UserCreateDTO;
+import com.wda.bookstore.api.entity.PublisherEntity;
 import com.wda.bookstore.api.entity.RentalEntity;
 import com.wda.bookstore.api.entity.UserEntity;
+import com.wda.bookstore.api.exception.publisher.PublisherNotFoundException;
+import com.wda.bookstore.api.exception.user.AlreadyOnListException;
 import com.wda.bookstore.api.exception.user.UserAlreadyExistsException;
 import com.wda.bookstore.api.exception.user.UserNotFoundException;
 import com.wda.bookstore.api.exception.user.UserRentExists;
@@ -13,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,20 +36,21 @@ public class UserService {
         this.rentalRepository = rentalRepository;
     }
 
-    public UserDTO create(UserDTO userDTO){
-        verifyIfExists(userDTO.getName(), userDTO.getEmail());
+    public UserCreateDTO create(@Valid UserCreateDTO userDTO){
+        verifyIfExists(userDTO.getEmail());
         UserEntity userToCreate = modelMapper.map(userDTO, UserEntity.class);
         UserEntity createdUser = userRepository.save(userToCreate);
-        return modelMapper.map(createdUser, UserDTO.class);
+        return modelMapper.map(createdUser, UserCreateDTO.class);
     }
 
-    private void verifyIfExists(String name, String email) {
+    private void verifyIfExists(String email) {
         Optional<UserEntity> duplicatedUser = userRepository
-                .findByNameOrEmail(name, email);
+                .findByEmail(email);
         if (duplicatedUser.isPresent()) {
-            throw new UserAlreadyExistsException(name, email);
+            throw new UserAlreadyExistsException(email);
         }
     }
+
 
     public List<UserDTO> findAll() {
         List<UserEntity> users = userRepository.findAll();
@@ -54,14 +60,18 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO update(UserDTO userToUpdateDTO) {
+    public UserDTO update(UserDTO userToUpdateDTO) throws AlreadyOnListException {
         UserEntity foundUser = verifyIfIdExists(userToUpdateDTO.getId());
-
-        modelMapper.map(userToUpdateDTO, foundUser);
-
-        UserEntity updatedUser = userRepository.save(foundUser);
-
-        return modelMapper.map(updatedUser, UserDTO.class);
+        List<UserEntity> usersWithSameNameOrEmail = userRepository.findByEmailList(
+                userToUpdateDTO.getEmail());
+        usersWithSameNameOrEmail.removeIf(user -> user.getId().equals(foundUser.getId()));
+        if (usersWithSameNameOrEmail.isEmpty()) {
+            modelMapper.map(userToUpdateDTO, foundUser);
+            UserEntity updatedUser = userRepository.save(foundUser);
+            return modelMapper.map(updatedUser, UserDTO.class);
+        } else {
+            throw new AlreadyOnListException("Já existe um usuário com o mesmo email.");
+        }
     }
 
     private UserEntity verifyIfIdExists(Long id) {
@@ -75,6 +85,11 @@ public class UserService {
     public UserDTO findById(Long id){
         return userRepository.findById(id)
                 .map(user -> modelMapper.map(user, UserDTO.class))
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    public UserEntity verifyAndGetIfExists(Long id){
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 

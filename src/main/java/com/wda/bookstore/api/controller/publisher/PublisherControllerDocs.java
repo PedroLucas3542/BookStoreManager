@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.controller.publisher;
 
+import com.wda.bookstore.api.dto.publisher.PublisherCreateDTO;
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +17,7 @@ public interface PublisherControllerDocs {
             @ApiResponse(code = 201, message = "Success publisher creation"),
             @ApiResponse(code = 400, message = "Missing required fields or this publisher already exists"),
     })
-    PublisherDTO create(PublisherDTO publisherDTO);
+    PublisherCreateDTO create(PublisherCreateDTO publisherDTO);
 
     @ApiOperation(value = "Find Publisher By ID Operation")
     @ApiResponses(value = {

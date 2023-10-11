@@ -1,70 +1,94 @@
 package com.wda.bookstore.api.service;
 
 import com.wda.bookstore.api.dto.book.BookDTO;
+import com.wda.bookstore.api.dto.rental.RentalCreateDTO;
 import com.wda.bookstore.api.dto.rental.RentalDTO;
+import com.wda.bookstore.api.dto.rental.RentalUpdateDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.entity.BookEntity;
+import com.wda.bookstore.api.entity.PublisherEntity;
 import com.wda.bookstore.api.entity.RentalEntity;
+import com.wda.bookstore.api.entity.UserEntity;
 import com.wda.bookstore.api.exception.book.UnavaiableBookException;
 import com.wda.bookstore.api.repository.BookRepository;
 import com.wda.bookstore.api.repository.RentalRepository;
+import com.wda.bookstore.api.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class RentalService {
 
-    @Autowired
+    private UserRepository userRepository;
+
+    private BookService bookService;
+
+    private UserService userService;
+
     private BookRepository bookRepository;
 
-    private final RentalRepository rentalRepository;
+    private RentalRepository rentalRepository;
 
-    private final ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     private RentalDTO convertToDTO(RentalEntity rentalEntity) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(rentalEntity, RentalDTO.class);
     }
 
-    @Autowired
-    public RentalService(BookRepository bookRepository, RentalRepository rentalRepository, ModelMapper modelMapper) {
-        this.bookRepository = bookRepository;
-        this.rentalRepository = rentalRepository;
-        this.modelMapper = modelMapper;
-    }
-
     public Optional<RentalEntity> getRentalById(Long id) {
         return rentalRepository.findById(id);
     }
 
-    public RentalDTO create(RentalDTO rentalDTO) throws UnavaiableBookException {
-        Long bookId = rentalDTO.getBook().getId();
-        UserDTO user = rentalDTO.getUser();
-
-        if (bookId != null && user != null) {
+    public RentalCreateDTO create(RentalCreateDTO rentalDTO) throws UnavaiableBookException {
+        Long bookId = rentalDTO.getBookId();
+        Long userId = rentalDTO.getUserId();
+        BookEntity foundBook = bookService.verifyAndGetIfExists(bookId);
+        UserEntity foundUser = userService.verifyAndGetIfExists(userId);
+        if (bookId != null && userId != null) {
             BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
             if (bookEntity != null) {
                 if (!isBookAvailable(bookId)) {
                     throw new UnavaiableBookException("Este livro não está disponível para aluguel.");
                 }
-                if (isBookRentedToUser(bookId, user.getId())) {
+                if (isBookRentedToUser(bookId, userId)) {
                     throw new UnavaiableBookException("Este usuário já tem um aluguel ativo com este livro");
                 }
-                rentalDTO.setStatus("Pendente");
+
+                RentalEntity rentalEntity = new RentalEntity();
+                rentalEntity.setStatus("Pendente");
+                rentalEntity.setBook(bookEntity);
+                rentalEntity.setUser(userRepository.findById(userId).orElse(null));
+
+                rentalEntity.setRentDate(rentalDTO.getRentDate());
+                rentalEntity.setPrevisionDate(rentalDTO.getPrevisionDate());
+
                 bookEntity.setTotalRented(bookEntity.getTotalRented() + 1);
                 bookEntity.setAmount(bookEntity.getAmount() - 1);
                 bookRepository.save(bookEntity);
 
-                RentalEntity rentalToCreate = modelMapper.map(rentalDTO, RentalEntity.class);
-                RentalEntity createdRental = rentalRepository.save(rentalToCreate);
-                return modelMapper.map(createdRental, RentalDTO.class);
+                rentalRepository.save(rentalEntity);
+
+                RentalCreateDTO createdRentalDTO = new RentalCreateDTO();
+                createdRentalDTO.setStatus(rentalEntity.getStatus());
+                createdRentalDTO.setUserId(rentalEntity.getUser().getId());
+                createdRentalDTO.setBookId(rentalEntity.getBook().getId());
+                createdRentalDTO.setRentDate(rentalEntity.getRentDate());
+                createdRentalDTO.setPrevisionDate(rentalEntity.getPrevisionDate());
+
+                return createdRentalDTO;
             }
         }
         return rentalDTO;
@@ -78,7 +102,7 @@ public class RentalService {
 
     private boolean isBookAvailable(Long bookId) {
         BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
-        return bookEntity != null && bookEntity.getAmount() > bookEntity.getTotalRented();
+        return bookEntity != null && bookEntity.getAmount() > 0;
     }
 
     public List<RentalDTO> getAllRentals() {
@@ -89,11 +113,11 @@ public class RentalService {
                 .collect(Collectors.toList());
     }
 
-    public RentalDTO update(RentalDTO rentalDTO) {
-        Long bookId = rentalDTO.getBook().getId();
+    public RentalUpdateDTO update(RentalUpdateDTO rentalDTO) {
         RentalEntity rentToUpdate = verifyIfIdExists(rentalDTO.getId());
+        Long bookId = rentToUpdate.getBook().getId();
         LocalDate returnDate = rentalDTO.getReturnDate();
-        LocalDate dueDate = rentalDTO.getPrevisionDate();
+        LocalDate dueDate = rentToUpdate.getPrevisionDate();
         BookEntity bookEntity = bookRepository.findById(bookId).orElse(null);
         if (bookEntity != null) {
             if (returnDate == null || returnDate.isBefore(dueDate)) {
@@ -106,8 +130,7 @@ public class RentalService {
             bookRepository.save(bookEntity);
 
             rentToUpdate.setReturnDate(returnDate);
-            RentalEntity updatedRental = rentalRepository.save(rentToUpdate);
-            return convertToDTO(updatedRental);
+            rentalRepository.save(rentToUpdate);
         }
         return rentalDTO;
     }

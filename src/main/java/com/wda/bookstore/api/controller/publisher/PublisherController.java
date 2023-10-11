@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.controller.publisher;
 
+import com.wda.bookstore.api.dto.publisher.PublisherCreateDTO;
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.service.PublisherService;
 import io.swagger.annotations.Api;
@@ -24,7 +25,7 @@ public class PublisherController implements PublisherControllerDocs {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PublisherDTO create(@RequestBody @Valid PublisherDTO publisherDTO) {
+    public PublisherCreateDTO create(@RequestBody @Valid PublisherCreateDTO publisherDTO) {
         return publisherService.create(publisherDTO);
     }
 

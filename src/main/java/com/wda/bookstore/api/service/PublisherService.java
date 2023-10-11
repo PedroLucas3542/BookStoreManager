@@ -1,5 +1,6 @@
 package com.wda.bookstore.api.service;
 
+import com.wda.bookstore.api.dto.publisher.PublisherCreateDTO;
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.entity.PublisherEntity;
 import com.wda.bookstore.api.exception.publisher.PublisherAlreadyExistsException;
@@ -30,10 +31,10 @@ public class PublisherService {
         this.modelMapper = modelMapper;
     }
 
-    public PublisherDTO create(PublisherDTO publisherDTO){
+    public PublisherCreateDTO create(PublisherCreateDTO publisherDTO){
         verifyIfExists(publisherDTO.getName());
         PublisherEntity createdPublisher = publisherRepository.save(modelMapper.map(publisherDTO, PublisherEntity.class));
-        return modelMapper.map(createdPublisher, PublisherDTO.class);
+        return modelMapper.map(createdPublisher, PublisherCreateDTO.class);
     }
 
     public PublisherDTO findById(Long id){
@@ -59,6 +60,11 @@ public class PublisherService {
             throw new PublisherNotFoundException(id);
         }
         return publisherOptional.get();
+    }
+
+    public PublisherEntity verifyAndGetIfExists(Long id){
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new PublisherNotFoundException(id));
     }
 
     public List<PublisherDTO> findAll() {

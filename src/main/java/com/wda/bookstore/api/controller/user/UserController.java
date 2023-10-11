@@ -1,9 +1,10 @@
 package com.wda.bookstore.api.controller.user;
 
 import com.wda.bookstore.api.dto.user.UserDTO;
+import com.wda.bookstore.api.dto.user.UserCreateDTO;
+import com.wda.bookstore.api.exception.user.AlreadyOnListException;
 import com.wda.bookstore.api.exception.user.UserRentExists;
 import com.wda.bookstore.api.service.UserService;
-import io.swagger.annotations.Api;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@Api(tags = "Users")
 public class UserController implements UserControllerDocs{
 
     private UserService userService;
@@ -23,7 +23,7 @@ public class UserController implements UserControllerDocs{
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@RequestBody @Valid UserDTO userDTO) {
+    public UserCreateDTO create(@RequestBody @Valid UserCreateDTO userDTO) {
         return userService.create(userDTO);
     }
 
@@ -38,7 +38,7 @@ public class UserController implements UserControllerDocs{
     }
 
     @PutMapping
-    public UserDTO update(@RequestBody @Valid UserDTO userToUpdateDTO) {
+    public UserDTO update(@RequestBody @Valid UserDTO userToUpdateDTO) throws AlreadyOnListException {
         return userService.update(userToUpdateDTO);
     }
 
