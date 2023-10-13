@@ -5,6 +5,7 @@ import com.wda.bookstore.api.dto.book.BookDTO;
 import com.wda.bookstore.api.dto.book.BookUpdateDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.exception.book.AmountErrorException;
+import com.wda.bookstore.api.exception.book.AmountLessThanActualErrorException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.book.YearErrorException;
 import com.wda.bookstore.api.service.BookService;
@@ -33,6 +34,11 @@ public class BookController implements BookControllerDocs{
         return bookService.create(bookDTO);
     }
 
+    @GetMapping("/rented-books")
+    public List<BookDTO> getRentedBooks() {
+        return bookService.getRentedBooks();
+    }
+
     @GetMapping("/all")
     public List<BookDTO> findAll() {
         return bookService.findAll();
@@ -52,7 +58,7 @@ public class BookController implements BookControllerDocs{
         bookService.delete(id);
     }
     @PutMapping
-    public BookUpdateDTO update(@RequestBody BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
+    public BookUpdateDTO update(@RequestBody BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException, AmountLessThanActualErrorException {
         return bookService.update(bookToUpdateDTO);
     }
 }

@@ -39,7 +39,7 @@ public interface UserControllerDocs {
             @ApiResponse(code = 200, message = "Success user updated"),
             @ApiResponse(code = 400, message = "Missing required fields or this user already exists"),
     })
-    UserDTO update(UserDTO userToUpdateDTO) throws AlreadyOnListException;
+    UserDTO update(@ApiParam(name = "body", value = "Representation of a edited user", required = true)UserDTO userToUpdateDTO) throws AlreadyOnListException;
 
     @ApiOperation(value = "Delete User By ID Operation")
     @ApiResponses(value = {

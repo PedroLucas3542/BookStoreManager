@@ -6,12 +6,10 @@ import com.wda.bookstore.api.dto.book.BookUpdateDTO;
 import com.wda.bookstore.api.dto.publisher.PublisherDTO;
 import com.wda.bookstore.api.dto.user.UserDTO;
 import com.wda.bookstore.api.exception.book.AmountErrorException;
+import com.wda.bookstore.api.exception.book.AmountLessThanActualErrorException;
 import com.wda.bookstore.api.exception.book.BookRentExists;
 import com.wda.bookstore.api.exception.book.YearErrorException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +25,7 @@ public interface BookControllerDocs {
             @ApiResponse(code = 201, message = "Success book creation"),
             @ApiResponse(code = 400, message = "Missing required fields or this book already exists"),
     })
-    public BookCreateDTO create(@RequestBody @Valid BookCreateDTO bookDTO) throws YearErrorException, AmountErrorException;
+    public BookCreateDTO create(@ApiParam(name = "body", value = "Representation of a new book", required = true)@RequestBody @Valid BookCreateDTO bookDTO) throws YearErrorException, AmountErrorException;
 
     @ApiOperation(value = "List All Book Operation")
     @ApiResponses(value = {
@@ -42,6 +40,14 @@ public interface BookControllerDocs {
 
     })
     List<BookDTO> getAvailableBooks();
+
+
+    @ApiOperation(value = "List All Avaible Book Operation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Return all rented books"),
+
+    })
+    List<BookDTO> getRentedBooks();
 
     @ApiOperation(value = "Find Book By ID Operation")
     @ApiResponses(value = {
@@ -62,5 +68,5 @@ public interface BookControllerDocs {
             @ApiResponse(code = 200, message = "Success book updated"),
             @ApiResponse(code = 400, message = "Missing required fields or this book already exists"),
     })
-    BookUpdateDTO update(BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException;
+    BookUpdateDTO update(@ApiParam(name = "body", value = "Representation of a edited book", required = true)BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException, AmountLessThanActualErrorException;
 }

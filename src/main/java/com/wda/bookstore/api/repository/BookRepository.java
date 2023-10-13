@@ -15,4 +15,6 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
     boolean existsByNameAndPublisher(String bookName, PublisherEntity publisher);
     boolean existsBooksByPublisher(@Param("publisher") PublisherEntity publisher);
     List<BookEntity> findByAmountGreaterThan(int amount);
+    boolean existsByNameAndPublisherAndIdNot(String name, PublisherEntity publisher, Long idToExclude);
+    List<BookEntity> findByTotalRentedGreaterThan(int totalRented);
 }

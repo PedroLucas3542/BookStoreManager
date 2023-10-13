@@ -1,9 +1,6 @@
 package com.wda.bookstore.exception;
 
-import com.wda.bookstore.api.exception.book.AmountErrorException;
-import com.wda.bookstore.api.exception.book.BookRentExists;
-import com.wda.bookstore.api.exception.book.UnavaiableBookException;
-import com.wda.bookstore.api.exception.book.YearErrorException;
+import com.wda.bookstore.api.exception.book.*;
 import com.wda.bookstore.api.exception.publisher.PublisherHasBooksException;
 import com.wda.bookstore.api.exception.user.AlreadyOnListException;
 import com.wda.bookstore.api.exception.user.UserRentExists;
@@ -55,6 +52,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorResponse handleAlreadyOnListException(AlreadyOnListException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AmountLessThanActualErrorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleAmountLessThanActualErrorException(AmountLessThanActualErrorException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 

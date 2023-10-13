@@ -70,10 +70,7 @@ public class BookService {
         return createdBookDTO;
     }
 
-
-
-
-    public BookUpdateDTO update(BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException {
+    public BookUpdateDTO update(BookUpdateDTO bookToUpdateDTO) throws YearErrorException, AmountErrorException, AmountLessThanActualErrorException {
         int currentYear = Year.now().getValue();
         if (bookToUpdateDTO.getPublishingYear() > currentYear) {
             throw new YearErrorException("O ano de nascimento do livro deve ser do ano atual para trás.");
@@ -88,9 +85,22 @@ public class BookService {
         } else {
             throw new PublisherNotFoundException(bookToUpdateDTO.getPublisherId());
         }
+
+        if (bookToUpdateDTO.getAmount() < foundBook.getAmount()) {
+            throw new AmountLessThanActualErrorException("A quantidade de livros não pode ser reduzida.");
+        }
+
+        verifyIfExistsByNameAndPublisherAndIdNot(bookToUpdateDTO.getName(), foundPublisher, bookToUpdateDTO.getId());
+
         modelMapper.map(bookToUpdateDTO, foundBook);
         BookEntity updatedBook = bookRepository.save(foundBook);
         return modelMapper.map(updatedBook, BookUpdateDTO.class);
+    }
+
+    private void verifyIfExistsByNameAndPublisherAndIdNot(String name, PublisherEntity publisher, Long idToExclude) {
+        if (bookRepository.existsByNameAndPublisherAndIdNot(name, publisher, idToExclude)) {
+            throw new BookAlreadyExistsException("Um livro com o mesmo nome já está associado a esta editora.");
+        }
     }
 
     private BookEntity verifyIfIdBookExists(Long id) {
@@ -106,7 +116,6 @@ public class BookService {
 
         return books.stream()
                 .map(book -> modelMapper.map(book, BookDTO.class))
-                .sorted(Comparator.comparingInt(BookDTO::getTotalRented).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -115,6 +124,15 @@ public class BookService {
 
         return availableBooks.stream()
                 .map(bookEntity -> modelMapper.map(bookEntity, BookDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<BookDTO> getRentedBooks() {
+        List<BookEntity> rentedBooks = bookRepository.findByTotalRentedGreaterThan(0);
+
+        return rentedBooks.stream()
+                .map(bookEntity -> modelMapper.map(bookEntity, BookDTO.class))
+                .sorted(Comparator.comparingInt(BookDTO::getTotalRented).reversed())
                 .collect(Collectors.toList());
     }
 
